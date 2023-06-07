@@ -71,28 +71,9 @@ impl From<OpusError> for Error {
     }
 }
 
-impl From<SendError<WsMessage>> for Error {
-    fn from(_e: SendError<WsMessage>) -> Error {
+impl From<SendError> for Error {
+    fn from(_e: SendError) -> Error {
         Error::InterconnectFailure(Recipient::AuxNetwork)
-    }
-}
-
-impl From<SendError<EventMessage>> for Error {
-    fn from(_e: SendError<EventMessage>) -> Error {
-        Error::InterconnectFailure(Recipient::Event)
-    }
-}
-
-impl From<SendError<MixerMessage>> for Error {
-    fn from(_e: SendError<MixerMessage>) -> Error {
-        Error::InterconnectFailure(Recipient::Mixer)
-    }
-}
-
-#[cfg(feature = "receive")]
-impl From<SendError<UdpRxMessage>> for Error {
-    fn from(_e: SendError<UdpRxMessage>) -> Error {
-        Error::InterconnectFailure(Recipient::UdpRx)
     }
 }
 

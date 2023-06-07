@@ -102,7 +102,7 @@ impl Worker {
         &mut self,
         id: TaskId,
         task: ParkedMixer,
-    ) -> Result<(), SendError<(TaskId, ParkedMixer)>> {
+    ) -> Result<(), SendError> {
         self.mark_busy();
         self.stats.add_mixer();
         self.tx.send((id, task))

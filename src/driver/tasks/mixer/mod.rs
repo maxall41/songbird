@@ -34,7 +34,7 @@ use discortp::{
     rtp::{MutableRtpPacket, RtpPacket},
     MutablePacket,
 };
-use kanal::{Receiver, SendError, Sender, TryRecvError};
+use kanal::{Receiver, SendError, Sender, ReceiveError};
 use rand::random;
 use rubato::{FftFixedOut, Resampler};
 use std::{
@@ -189,7 +189,7 @@ impl Mixer {
         &mut self,
         event_failure: bool,
         conn_failure: bool,
-    ) -> StdResult<(), SendError<CoreMessage>> {
+    ) -> StdResult<(), SendError> {
         // event failure? rebuild interconnect.
         // ws or udp failure? full connect
         // (soft reconnect is covered by the ws task.)
@@ -207,14 +207,14 @@ impl Mixer {
         Ok(())
     }
 
-    pub(crate) fn rebuild_interconnect(&mut self) -> StdResult<(), SendError<CoreMessage>> {
+    pub(crate) fn rebuild_interconnect(&mut self) -> StdResult<(), SendError> {
         self.prevent_events = true;
         self.interconnect
             .core
             .send(CoreMessage::RebuildInterconnect)
     }
 
-    pub(crate) fn full_reconnect_gateway(&mut self) -> StdResult<(), SendError<CoreMessage>> {
+    pub(crate) fn full_reconnect_gateway(&mut self) -> StdResult<(), SendError> {
         self.conn_active = None;
         self.interconnect.core.send(CoreMessage::FullReconnect)
     }
