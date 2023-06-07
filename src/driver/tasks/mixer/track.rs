@@ -223,7 +223,7 @@ impl<'a> InternalTrack {
                     Ok(x) => {
                         if x.is_some() {
                             match x.unwrap() {
-                                Ok(MixerInputResultMessage::Built(parsed, rec)) => {
+                                MixerInputResultMessage::Built(parsed, rec) => {
                                     *input = InputState::Ready(parsed, rec);
                                     mix_state.reset();
 
@@ -246,7 +246,7 @@ impl<'a> InternalTrack {
                                         unreachable!()
                                     }
                                 },
-                                Ok(MixerInputResultMessage::Seek(parsed, rec, seek_res)) => {
+                                MixerInputResultMessage::Seek(parsed, rec, seek_res) => {
                                     match seek_res {
                                         Ok(pos) =>
                                             if let Some(time_base) = parsed.decoder.codec_params().time_base {
@@ -292,10 +292,12 @@ impl<'a> InternalTrack {
                                         Err(e) => Err(InputReadyingError::Seeking(e)),
                                     }
                                 },
-                                Ok(MixerInputResultMessage::CreateErr(e)) =>
+                                MixerInputResultMessage::CreateErr(e) =>
                                     Err(InputReadyingError::Creation(e)),
-                                Ok(MixerInputResultMessage::ParseErr(e)) => Err(InputReadyingError::Parsing(e)),
+                                MixerInputResultMessage::ParseErr(e) => Err(InputReadyingError::Parsing(e)),
                             }
+                        } else {
+                            return Err(InputReadyingError::Waiting);
                         }
                     }
                     Err(ReceiveError::Closed) => Err(InputReadyingError::Dropped),
