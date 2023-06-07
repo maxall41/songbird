@@ -1,6 +1,6 @@
 use std::{error::Error as StdError, fmt::Display, num::NonZeroUsize, sync::Arc};
 
-use flume::{Receiver, RecvError, Sender};
+use kanal::{ReceiveError, Receiver, Sender};
 use once_cell::sync::Lazy;
 
 use crate::{constants::TIMESTEP_LENGTH, Config as DriverConfig};
@@ -100,7 +100,7 @@ impl Scheduler {
 
     /// Request a list of handles to statistics for currently live workers.
     pub async fn worker_thread_stats(&self) -> Result<Vec<Arc<LiveStatBlock>>, Error> {
-        let (tx, rx) = flume::bounded(1);
+        let (tx, rx) = kanal::bounded(1);
         _ = self.inner.tx.send(SchedulerMessage::GetStats(tx));
 
         rx.recv_async().await.map_err(Error::from)
@@ -108,7 +108,7 @@ impl Scheduler {
 
     /// Request a list of handles to statistics for currently live workers with a blocking call.
     pub fn worker_thread_stats_blocking(&self) -> Result<Vec<Arc<LiveStatBlock>>, Error> {
-        let (tx, rx) = flume::bounded(1);
+        let (tx, rx) = kanal::bounded(1);
         _ = self.inner.tx.send(SchedulerMessage::GetStats(tx));
 
         rx.recv().map_err(Error::from)
@@ -167,8 +167,8 @@ impl StdError for Error {
     }
 }
 
-impl From<RecvError> for Error {
-    fn from(_: RecvError) -> Self {
+impl From<ReceiveError> for Error {
+    fn from(_: ReceiveError) -> Self {
         Self::Disconnected
     }
 }

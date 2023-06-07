@@ -10,7 +10,7 @@ use crate::{
     test_utils,
     tracks::LoopState,
 };
-use flume::{Receiver, Sender};
+use kanal::{Receiver, Sender};
 use std::{io::Cursor, net::UdpSocket, sync::Arc};
 use tokio::runtime::Handle;
 use xsalsa20poly1305::{KeyInit, XSalsa20Poly1305 as Cipher, KEY_SIZE};
@@ -38,12 +38,12 @@ pub type DummyMixer = (Mixer, Listeners);
 
 impl Mixer {
     pub fn mock(handle: Handle, softclip: bool) -> DummyMixer {
-        let (mix_tx, mix_rx) = flume::unbounded();
-        let (core_tx, core_rx) = flume::unbounded();
-        let (event_tx, event_rx) = flume::unbounded();
+        let (mix_tx, mix_rx) = kanal::unbounded();
+        let (core_tx, core_rx) = kanal::unbounded();
+        let (event_tx, event_rx) = kanal::unbounded();
 
         #[cfg(feature = "receive")]
-        let (udp_receiver_tx, udp_receiver_rx) = flume::unbounded();
+        let (udp_receiver_tx, udp_receiver_rx) = kanal::unbounded();
 
         let ic = Interconnect {
             core: core_tx,
@@ -52,7 +52,7 @@ impl Mixer {
         };
 
         // Scheduler must be created from a Tokio context...
-        let (tx, rx) = flume::unbounded();
+        let (tx, rx) = kanal::unbounded();
         handle.spawn_blocking(move || tx.send(crate::Config::default().use_softclip(softclip)));
         let config = rx.recv().unwrap();
 
@@ -184,8 +184,8 @@ impl MockScheduler {
         let stats = Arc::new(StatBlock::default());
         let local = Arc::new(LiveStatBlock::default());
 
-        let (task_tx, task_rx) = flume::unbounded();
-        let (sched_tx, sched_rx) = flume::unbounded();
+        let (task_tx, task_rx) = kanal::unbounded();
+        let (sched_tx, sched_rx) = kanal::unbounded();
 
         let mut cfg = crate::driver::SchedulerConfig::default();
         cfg.strategy = mode.unwrap_or_default();

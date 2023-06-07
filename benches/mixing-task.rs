@@ -9,7 +9,7 @@ use criterion::{
     BenchmarkId,
     Criterion,
 };
-use flume::{Receiver, Sender, TryRecvError};
+use kanal::{Receiver, Sender, TryRecvError};
 use songbird::{
     constants::*,
     driver::{

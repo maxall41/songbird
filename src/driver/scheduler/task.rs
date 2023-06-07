@@ -3,7 +3,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-use flume::{Receiver, Sender};
+use kanal::{Receiver, Sender};
 use nohash_hasher::IsEnabled;
 use rand::random;
 use tokio::runtime::Handle;

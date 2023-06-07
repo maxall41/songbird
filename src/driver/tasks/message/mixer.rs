@@ -8,7 +8,7 @@ use crate::{
     driver::{Bitrate, Config, CryptoState},
     input::{AudioStreamError, Compose, Parsed},
 };
-use flume::Sender;
+use kanal::Sender;
 use std::{net::UdpSocket, sync::Arc};
 use symphonia_core::{errors::Error as SymphoniaError, formats::SeekedTo};
 use xsalsa20poly1305::XSalsa20Poly1305 as Cipher;

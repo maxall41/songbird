@@ -22,7 +22,7 @@ use crate::{
 };
 use discortp::discord::{IpDiscoveryPacket, IpDiscoveryType, MutableIpDiscoveryPacket};
 use error::{Error, Result};
-use flume::Sender;
+use kanal::Sender;
 use socket2::Socket;
 #[cfg(feature = "receive")]
 use std::sync::Arc;
@@ -176,9 +176,9 @@ impl Connection {
 
         info!("WS heartbeat duration {}ms.", hello.heartbeat_interval,);
 
-        let (ws_msg_tx, ws_msg_rx) = flume::unbounded();
+        let (ws_msg_tx, ws_msg_rx) = kanal::unbounded();
         #[cfg(feature = "receive")]
-        let (udp_receiver_msg_tx, udp_receiver_msg_rx) = flume::unbounded();
+        let (udp_receiver_msg_tx, udp_receiver_msg_rx) = kanal::unbounded();
 
         // NOTE: This causes the UDP Socket on "receive" to be non-blocking,
         // and the standard to be blocking. A UDP send should only WouldBlock if

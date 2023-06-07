@@ -61,7 +61,7 @@ use core::{
     pin::Pin,
     task::{Context, Poll},
 };
-use flume::{r#async::RecvFut, SendError, Sender};
+use kanal::{SendError, Sender};
 #[cfg(feature = "builtin-queue")]
 use std::time::Duration;
 use tasks::message::CoreMessage;
@@ -105,7 +105,7 @@ impl Driver {
     }
 
     fn start_inner(config: Config) -> Sender<CoreMessage> {
-        let (tx, rx) = flume::unbounded();
+        let (tx, rx) = kanal::unbounded();
 
         tasks::start(config, rx, tx.clone());
 
@@ -124,7 +124,7 @@ impl Driver {
     /// does not need to be `await`ed to start the actual connection.
     #[instrument(skip(self))]
     pub fn connect(&mut self, info: ConnectionInfo) -> Connect {
-        let (tx, rx) = flume::bounded(1);
+        let (tx, rx) = kanal::bounded(1);
 
         self.raw_connect(info, tx);
 

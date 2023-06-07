@@ -34,7 +34,7 @@ use discortp::{
     rtp::{MutableRtpPacket, RtpPacket},
     MutablePacket,
 };
-use flume::{Receiver, SendError, Sender, TryRecvError};
+use kanal::{Receiver, SendError, Sender, TryRecvError};
 use rand::random;
 use rubato::{FftFixedOut, Resampler};
 use std::{

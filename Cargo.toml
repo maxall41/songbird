@@ -21,8 +21,8 @@ bytes = { optional = true, version = "1" }
 dashmap = { optional = true, version = "5" }
 derivative = "2"
 discortp = { default-features = false, features = ["discord", "pnet", "rtp"], optional = true, version = "0.5" }
-flume = { optional = true, version = "0.10" }
 futures = "0.3"
+kanal = "0.1.0-pre8"
 nohash-hasher = { optional = true, version = "0.2.0" }
 once_cell = { optional = true, version = "1" }
 parking_lot = { optional = true, version = "0.12" }
@@ -73,71 +73,12 @@ tokio = { version = "1", features = ["rt", "rt-multi-thread", "test-util"] }
 
 [features]
 # Core features
-default = [
-    "driver",
-    "gateway",
-    "rustls",
-    "serenity",
-]
-gateway = [
-    "dep:async-trait",
-    "dep:dashmap",
-    "dep:flume",
-    "dep:once_cell",
-    "dep:parking_lot",
-    "dep:tokio",
-    "tokio?/sync",
-    "tokio?/time",
-]
-driver = [
-    "dep:async-trait",
-    "dep:audiopus",
-    "dep:byteorder",
-    "dep:discortp",
-    "dep:reqwest",
-    "dep:flume",
-    "dep:nohash-hasher",
-    "dep:once_cell",
-    "dep:parking_lot",
-    "dep:rand",
-    "dep:ringbuf",
-    "dep:rubato",
-    "dep:rusty_pool",
-    "dep:serde-aux",
-    "dep:serenity-voice-model",
-    "dep:socket2",
-    "dep:streamcatcher",
-    "dep:symphonia",
-    "dep:symphonia-core",
-    "dep:tokio",
-    "dep:tokio-tungstenite",
-    "dep:tokio-util",
-    "dep:typemap_rev",
-    "dep:url",
-    "dep:uuid",
-    "dep:xsalsa20poly1305",
-    "tokio?/fs",
-    "tokio?/io-util",
-    "tokio?/macros",
-    "tokio?/net",
-    "tokio?/process",
-    "tokio?/rt",
-    "tokio?/sync",
-    "tokio?/time",
-]
-rustls = [
-    "reqwest?/rustls-tls",
-    "serenity?/rustls_backend",
-    "tokio-tungstenite?/rustls-tls-webpki-roots",
-    "twilight-gateway?/rustls-native-roots",
-]
-native = [
-    "reqwest?/native-tls",
-    "serenity?/native_tls_backend",
-    "tokio-tungstenite?/native-tls",
-    "twilight-gateway?/native",
-]
-twilight = ["dep:twilight-gateway","dep:twilight-model"]
+default = ["driver", "gateway", "rustls", "serenity"]
+gateway = ["dep:async-trait", "dep:dashmap", "dep:once_cell", "dep:parking_lot", "dep:tokio", "tokio?/sync", "tokio?/time"]
+driver = ["dep:async-trait", "dep:audiopus", "dep:byteorder", "dep:discortp", "dep:reqwest", "dep:nohash-hasher", "dep:once_cell", "dep:parking_lot", "dep:rand", "dep:ringbuf", "dep:rubato", "dep:rusty_pool", "dep:serde-aux", "dep:serenity-voice-model", "dep:socket2", "dep:streamcatcher", "dep:symphonia", "dep:symphonia-core", "dep:tokio", "dep:tokio-tungstenite", "dep:tokio-util", "dep:typemap_rev", "dep:url", "dep:uuid", "dep:xsalsa20poly1305", "tokio?/fs", "tokio?/io-util", "tokio?/macros", "tokio?/net", "tokio?/process", "tokio?/rt", "tokio?/sync", "tokio?/time"]
+rustls = ["reqwest?/rustls-tls", "serenity?/rustls_backend", "tokio-tungstenite?/rustls-tls-webpki-roots", "twilight-gateway?/rustls-native-roots"]
+native = ["reqwest?/native-tls", "serenity?/native_tls_backend", "tokio-tungstenite?/native-tls", "twilight-gateway?/native"]
+twilight = ["dep:twilight-gateway", "dep:twilight-model"]
 
 # Behaviour altering features.
 builtin-queue = []

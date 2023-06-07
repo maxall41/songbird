@@ -12,7 +12,7 @@ mod ws;
 pub use self::udp_rx::*;
 pub use self::{core::*, disposal::*, events::*, mixer::*, ws::*};
 
-use flume::Sender;
+use kanal::Sender;
 use tokio::spawn;
 use tracing::trace;
 
@@ -36,7 +36,7 @@ impl Interconnect {
     pub fn restart_volatile_internals(&mut self) {
         self.poison();
 
-        let (evt_tx, evt_rx) = flume::unbounded();
+        let (evt_tx, evt_rx) = kanal::unbounded();
 
         self.events = evt_tx;
 

@@ -21,7 +21,7 @@ use crate::{
     Config,
     ConnectionInfo,
 };
-use flume::{Receiver, Sender};
+use kanal::{Receiver, Sender};
 use message::*;
 use tokio::{spawn, time::sleep as tsleep};
 use tracing::{debug, instrument, trace};
@@ -35,8 +35,8 @@ pub(crate) fn start(config: Config, rx: Receiver<CoreMessage>, tx: Sender<CoreMe
 }
 
 fn start_internals(core: Sender<CoreMessage>, config: &Config) -> Interconnect {
-    let (evt_tx, evt_rx) = flume::unbounded();
-    let (mix_tx, mix_rx) = flume::unbounded();
+    let (evt_tx, evt_rx) = kanal::unbounded();
+    let (mix_tx, mix_rx) = kanal::unbounded();
 
     let interconnect = Interconnect {
         core,

@@ -4,7 +4,7 @@ use crate::{
     driver::tasks::{error::Recipient, message::*},
     ws::Error as WsError,
 };
-use flume::SendError;
+use kanal::SendError;
 use serde_json::Error as JsonError;
 use std::{error::Error as StdError, fmt, io::Error as IoError};
 use tokio::time::error::Elapsed;

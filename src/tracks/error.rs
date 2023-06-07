@@ -1,5 +1,5 @@
 use crate::input::AudioStreamError;
-use flume::RecvError;
+use kanal::ReceiveError;
 use std::{
     error::Error,
     fmt::{Display, Formatter, Result as FmtResult},
@@ -46,8 +46,8 @@ impl Display for ControlError {
 
 impl Error for ControlError {}
 
-impl From<RecvError> for ControlError {
-    fn from(_: RecvError) -> Self {
+impl From<ReceiveError> for ControlError {
+    fn from(_: ReceiveError) -> Self {
         ControlError::Dropped
     }
 }

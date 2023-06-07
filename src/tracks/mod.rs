@@ -179,7 +179,7 @@ impl Track {
     }
 
     pub(crate) fn into_context(self) -> (TrackHandle, TrackContext) {
-        let (tx, receiver) = flume::unbounded();
+        let (tx, receiver) = kanal::unbounded();
         let handle = TrackHandle::new(tx, self.uuid);
 
         let context = TrackContext {

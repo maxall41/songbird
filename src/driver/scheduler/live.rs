@@ -4,7 +4,7 @@ use std::{
 };
 
 use discortp::rtp::{MutableRtpPacket, RtpPacket};
-use flume::{Receiver, SendError, Sender, TryRecvError};
+use kanal::{Receiver, SendError, Sender};
 use tokio::time::Instant as TokInstant;
 
 use crate::{
@@ -36,7 +36,7 @@ impl Worker {
         global_stats: Arc<StatBlock>,
     ) -> Self {
         let stats = Arc::new(LiveStatBlock::default());
-        let (live_tx, live_rx) = flume::unbounded();
+        let (live_tx, live_rx) = kanal::unbounded();
 
         let core = Live::new(
             id,

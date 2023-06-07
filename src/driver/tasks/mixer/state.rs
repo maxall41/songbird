@@ -4,9 +4,9 @@ use crate::{
     input::{Compose, Input, LiveInput, Metadata, Parsed},
     tracks::{ReadyState, SeekRequest},
 };
-use flume::Receiver;
 use rubato::FftFixedOut;
 use std::time::Instant;
+use kanal::Receiver;
 
 pub enum InputState {
     NotReady(Input),

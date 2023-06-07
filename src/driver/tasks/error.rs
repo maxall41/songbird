@@ -1,7 +1,7 @@
 use super::message::*;
 use crate::ws::Error as WsError;
 use audiopus::Error as OpusError;
-use flume::SendError;
+use kanal::SendError;
 use std::io::{Error as IoError, ErrorKind as IoErrorKind};
 use xsalsa20poly1305::aead::Error as CryptoError;
 

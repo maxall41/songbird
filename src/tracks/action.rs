@@ -1,4 +1,4 @@
-use flume::Sender;
+use kanal::Sender;
 use std::time::Duration;
 
 use super::{PlayError, SeekRequest};
@@ -17,7 +17,7 @@ impl Action {
     /// Requests a seek to the given time for this track.
     #[must_use]
     pub fn seek(mut self, time: Duration) -> Self {
-        let (callback, _) = flume::bounded(1);
+        let (callback, _) = kanal::bounded(1);
         self.seek_point = Some(SeekRequest { time, callback });
 
         self
@@ -26,7 +26,7 @@ impl Action {
     /// Readies the track to be playable, if this is not already the case.
     #[must_use]
     pub fn make_playable(mut self) -> Self {
-        let (tx, _) = flume::bounded(1);
+        let (tx, _) = kanal::bounded(1);
         self.make_playable = Some(tx);
 
         self

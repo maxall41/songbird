@@ -11,7 +11,7 @@ use crate::{
     ws::{Error as WsError, WsStream},
     ConnectionInfo,
 };
-use flume::Receiver;
+use kanal::Receiver;
 use rand::random;
 #[cfg(feature = "receive")]
 use std::sync::Arc;
@@ -145,7 +145,7 @@ impl AuxNetwork {
                                 }
                             }
                         },
-                        Err(flume::RecvError::Disconnected) => {
+                        Err(kanal::ReceiveError::Closed) => {
                             break;
                         },
                     }

@@ -1,6 +1,5 @@
 use crate::input::AudioStreamError;
 use async_trait::async_trait;
-use flume::{Receiver, RecvError, Sender, TryRecvError};
 use futures::{future::Either, stream::FuturesUnordered, FutureExt, StreamExt};
 use ringbuf::*;
 use std::{
@@ -18,6 +17,7 @@ use std::{
         Arc,
     },
 };
+use kanal::{ReceiveError, Receiver, Sender};
 use symphonia_core::io::MediaSource;
 use tokio::{
     io::{AsyncRead, AsyncReadExt, AsyncSeek, AsyncSeekExt},
@@ -84,7 +84,7 @@ impl AsyncAdapterSink {
                 let mut fs = FuturesUnordered::new();
                 fs.push(Either::Left(self.req_rx.recv_async()));
                 fs.push(Either::Right(self.notify_rx.notified().map(|_| {
-                    let o: Result<AdapterRequest, RecvError> = Ok(AdapterRequest::Wake);
+                    let o: Result<AdapterRequest, ReceiveError> = Ok(AdapterRequest::Wake);
                     o
                 })));
 
@@ -94,9 +94,13 @@ impl AsyncAdapterSink {
                 }
             } else {
                 match self.req_rx.try_recv() {
-                    Ok(a) => a,
-                    Err(TryRecvError::Empty) => continue,
-                    _ => break,
+                    Ok(res) => {
+                        match res {
+                            None => continue,
+                            Some(a) => a
+                        }
+                    },
+                    _ => break
                 }
             };
 
@@ -153,8 +157,8 @@ impl AsyncAdapterStream {
     #[must_use]
     pub fn new(stream: Box<dyn AsyncMediaSource>, buf_len: usize) -> AsyncAdapterStream {
         let (bytes_in, bytes_out) = SharedRb::new(buf_len).split();
-        let (resp_tx, resp_rx) = flume::unbounded();
-        let (req_tx, req_rx) = flume::unbounded();
+        let (resp_tx, resp_rx) = kanal::unbounded();
+        let (req_tx, req_rx) = kanal::unbounded();
         let can_seek = stream.is_seekable();
         let notify_rx = Arc::new(Notify::new());
         let notify_tx = notify_rx.clone();

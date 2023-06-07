@@ -3,7 +3,7 @@ use crate::{
     events::{EventStore, GlobalEvents, TrackEvent},
     tracks::{ReadyState, TrackHandle, TrackState},
 };
-use flume::Receiver;
+use kanal::Receiver;
 use tracing::{debug, info, instrument, trace};
 
 #[instrument(skip(_interconnect, evt_rx))]

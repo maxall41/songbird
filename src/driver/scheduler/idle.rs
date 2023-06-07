@@ -1,6 +1,6 @@
 use std::{collections::HashMap, sync::Arc, time::Duration};
 
-use flume::{Receiver, Sender};
+use kanal::{Receiver, Sender};
 use nohash_hasher::{BuildNoHashHasher, IntMap};
 use tokio::time::{Instant as TokInstant, Interval};
 
@@ -28,7 +28,7 @@ pub(crate) struct Idle {
 
 impl Idle {
     pub fn new(config: Config) -> (Self, Sender<SchedulerMessage>) {
-        let (tx, rx) = flume::unbounded();
+        let (tx, rx) = kanal::unbounded();
 
         let stats = Arc::default();
         let tasks = HashMap::with_capacity_and_hasher(128, BuildNoHashHasher::default());
@@ -238,7 +238,7 @@ mod test {
         config.move_expensive_tasks = false;
 
         let sched = Scheduler::new(config);
-        let (pkt_tx, _pkt_rx) = flume::unbounded();
+        let (pkt_tx, _pkt_rx) = kanal::unbounded();
         let cfg = DriverConfig::default()
             .scheduler(sched.clone())
             .override_connection(Some(OutputMode::Rtp(pkt_tx)));

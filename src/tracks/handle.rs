@@ -1,6 +1,6 @@
 use super::*;
 use crate::events::{Event, EventData, EventHandler};
-use flume::{Receiver, Sender};
+use kanal::{Receiver, Sender};
 use std::{fmt, sync::Arc, time::Duration};
 use tokio::sync::RwLock;
 use typemap_rev::TypeMap;
@@ -80,7 +80,7 @@ impl TrackHandle {
     ///
     /// If a track is already playable, the callback will instantly succeed.
     pub fn make_playable(&self) -> TrackCallback<()> {
-        let (tx, rx) = flume::bounded(1);
+        let (tx, rx) = kanal::bounded(1);
         let fail = self.send(TrackCommand::MakePlayable(tx)).is_err();
 
         TrackCallback { fail, rx }
@@ -105,7 +105,7 @@ impl TrackHandle {
     /// [`Input`]: crate::input::Input
     /// [`Compose`]: crate::input::Compose
     pub fn seek(&self, position: Duration) -> TrackCallback<Duration> {
-        let (tx, rx) = flume::bounded(1);
+        let (tx, rx) = kanal::bounded(1);
         let fail = self
             .send(TrackCommand::Seek(SeekRequest {
                 time: position,
@@ -157,7 +157,7 @@ impl TrackHandle {
 
     /// Request playback information and state from the audio context.
     pub async fn get_info(&self) -> TrackResult<TrackState> {
-        let (tx, rx) = flume::bounded(1);
+        let (tx, rx) = kanal::bounded(1);
         self.send(TrackCommand::Request(tx))?;
 
         rx.recv_async().await.map_err(|_| ControlError::Finished)

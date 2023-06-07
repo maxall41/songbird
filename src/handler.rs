@@ -8,7 +8,7 @@ use crate::{
     shards::{Shard, VoiceUpdate},
     Config,
 };
-use flume::Sender;
+use kanal::Sender;
 use std::fmt::Debug;
 use tracing::instrument;
 
@@ -224,8 +224,8 @@ impl Call {
 
     #[cfg(feature = "driver")]
     async fn _join(&mut self, channel_id: ChannelId) -> JoinResult<Join> {
-        let (tx, rx) = flume::unbounded();
-        let (gw_tx, gw_rx) = flume::unbounded();
+        let (tx, rx) = kanal::unbounded();
+        let (gw_tx, gw_rx) = kanal::unbounded();
 
         let do_conn = self
             .should_actually_join(|_| (), &gw_tx, channel_id)
@@ -284,7 +284,7 @@ impl Call {
     }
 
     async fn _join_gateway(&mut self, channel_id: ChannelId) -> JoinResult<JoinGateway> {
-        let (tx, rx) = flume::unbounded();
+        let (tx, rx) = kanal::unbounded();
 
         let do_conn = self
             .should_actually_join(

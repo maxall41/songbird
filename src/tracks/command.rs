@@ -1,6 +1,6 @@
 use super::*;
 use crate::events::EventData;
-use flume::Sender;
+use kanal::Sender;
 use std::{
     fmt::{Debug, Formatter, Result as FmtResult},
     time::Duration,

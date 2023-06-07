@@ -1,5 +1,5 @@
 use super::message::*;
-use flume::{Receiver, Sender};
+use kanal::{Receiver, Sender};
 use tracing::{instrument, trace};
 
 #[derive(Debug, Clone)]
@@ -13,7 +13,7 @@ impl Default for DisposalThread {
 
 impl DisposalThread {
     pub fn run() -> Self {
-        let (mix_tx, mix_rx) = flume::unbounded();
+        let (mix_tx, mix_rx) = kanal::unbounded();
         std::thread::spawn(move || {
             trace!("Disposal thread started.");
             runner(mix_rx);

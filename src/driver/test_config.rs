@@ -1,6 +1,6 @@
 #![allow(missing_docs)]
 
-use flume::{Receiver, Sender};
+use kanal::{ReceiveError, Receiver, Sender};
 
 use crate::{
     tracks::{PlayMode, TrackHandle, TrackState},
@@ -190,8 +190,8 @@ impl DriverTestHandle {
         handle: &TrackHandle,
         tick_wait: Option<Duration>,
     ) -> TrackState {
-        let (tx, rx) = flume::bounded(1);
-        let (err_tx, err_rx) = flume::bounded(1);
+        let (tx, rx) = kanal::bounded(1);
+        let (err_tx, err_rx) = kanal::bounded(1);
 
         struct SongPlayable {
             tx: Sender<TrackState>,
@@ -237,14 +237,23 @@ impl DriverTestHandle {
             self.wait_async(1).await;
 
             match err_rx.try_recv() {
-                Ok(e) => panic!("Error reported on track: {:?}", e),
-                Err(flume::TryRecvError::Empty | flume::TryRecvError::Disconnected) => {},
+                Ok(e) => {
+                    if e.is_some() {
+                        panic!("Error reported on track: {:?}", e.unwrap());
+                    }
+                },
+                Err(kanal::ReceiveError::Closed) => {},
+                _ => {}
             }
 
             match rx.try_recv() {
-                Ok(val) => return val,
-                Err(flume::TryRecvError::Disconnected) => panic!(),
-                Err(flume::TryRecvError::Empty) => {},
+                Ok(val) => {
+                    if val.is_some() {
+                        val.unwrap()
+                    }
+                },
+                Err(kanal::ReceiveError::Closed) => panic!(),
+                _ => {}
             }
         }
     }

@@ -5,7 +5,7 @@ use crate::{
     input::{AudioStream, AudioStreamError, Compose, Input, LiveInput, Parsed},
     Config,
 };
-use flume::Sender;
+use kanal::Sender;
 use parking_lot::RwLock;
 use std::{result::Result as StdResult, sync::Arc, time::Duration};
 use symphonia_core::{

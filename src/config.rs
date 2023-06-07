@@ -406,14 +406,14 @@ impl Config {
     }
 
     pub fn test_cfg(raw_output: bool) -> (DriverTestHandle, Config) {
-        let (tick_tx, tick_rx) = flume::unbounded();
+        let (tick_tx, tick_rx) = kanal::unbounded();
 
         let (conn, rx) = if raw_output {
-            let (pkt_tx, pkt_rx) = flume::unbounded();
+            let (pkt_tx, pkt_rx) = kanal::unbounded();
 
             (OutputMode::Raw(pkt_tx), OutputReceiver::Raw(pkt_rx))
         } else {
-            let (rtp_tx, rtp_rx) = flume::unbounded();
+            let (rtp_tx, rtp_rx) = kanal::unbounded();
 
             (OutputMode::Rtp(rtp_tx), OutputReceiver::Rtp(rtp_rx))
         };

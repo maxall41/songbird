@@ -14,7 +14,8 @@ use core::{
     task::{Context, Poll},
     time::Duration,
 };
-use flume::r#async::RecvFut;
+use futures::TryFutureExt;
+use kanal::ReceiveFuture;
 use pin_project::pin_project;
 use tokio::time::{self, Timeout};
 
@@ -43,8 +44,8 @@ pub struct Join {
 #[cfg(feature = "driver")]
 impl Join {
     pub(crate) fn new(
-        driver: RecvFut<'static, ConnectionResult<()>>,
-        gw_recv: RecvFut<'static, ()>,
+        driver: ReceiveFuture<'static, ConnectionResult<()>>,
+        gw_recv: ReceiveFuture<'static, ()>,
         timeout: Option<Duration>,
     ) -> Self {
         Self {
@@ -122,7 +123,7 @@ pub struct JoinGateway {
 }
 
 impl JoinGateway {
-    pub(crate) fn new(recv: RecvFut<'static, ConnectionInfo>, timeout: Option<Duration>) -> Self {
+    pub(crate) fn new(recv: ReceiveFuture<'static, ConnectionInfo>, timeout: Option<Duration>) -> Self {
         Self {
             inner: JoinClass::new(recv, timeout),
         }
@@ -140,12 +141,12 @@ impl Future for JoinGateway {
 #[allow(clippy::large_enum_variant)]
 #[pin_project(project = JoinClassProj)]
 enum JoinClass<T: 'static> {
-    WithTimeout(#[pin] Timeout<RecvFut<'static, T>>),
-    Vanilla(RecvFut<'static, T>),
+    WithTimeout(#[pin] Timeout<ReceiveFuture<'static, T>>),
+    Vanilla(ReceiveFuture<'static, T>),
 }
 
 impl<T: 'static> JoinClass<T> {
-    pub(crate) fn new(recv: RecvFut<'static, T>, timeout: Option<Duration>) -> Self {
+    pub(crate) fn new(recv: ReceiveFuture<'static, T>, timeout: Option<Duration>) -> Self {
         match timeout {
             Some(t) => JoinClass::WithTimeout(time::timeout(t, recv)),
             None => JoinClass::Vanilla(recv),

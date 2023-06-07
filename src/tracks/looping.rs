@@ -35,7 +35,7 @@ mod tests {
         EventHandler,
         TrackEvent,
     };
-    use flume::Sender;
+    use kanal::Sender;
 
     struct Looper {
         tx: Sender<TrackState>,
@@ -61,8 +61,8 @@ mod tests {
         let file = File::new(FILE_WAV_TARGET);
         let handle = driver.play(Track::from(file).loops(LoopState::Finite(2)));
 
-        let (l_tx, l_rx) = flume::unbounded();
-        let (e_tx, e_rx) = flume::unbounded();
+        let (l_tx, l_rx) = kanal::unbounded();
+        let (e_tx, e_rx) = kanal::unbounded();
         let _ = handle.add_event(Event::Track(TrackEvent::Loop), Looper { tx: l_tx });
         let _ = handle.add_event(Event::Track(TrackEvent::End), Looper { tx: e_tx });
 
@@ -97,7 +97,7 @@ mod tests {
         let file = File::new(FILE_WAV_TARGET);
         let handle = driver.play(Track::from(file).loops(LoopState::Infinite));
 
-        let (l_tx, l_rx) = flume::unbounded();
+        let (l_tx, l_rx) = kanal::unbounded();
         let _ = handle.add_event(Event::Track(TrackEvent::Loop), Looper { tx: l_tx });
 
         t_handle.spawn_ticker().await;

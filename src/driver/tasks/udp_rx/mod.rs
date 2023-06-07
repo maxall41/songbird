@@ -16,7 +16,7 @@ use discortp::{
     demux::{self, DemuxedMut},
     rtp::RtpPacket,
 };
-use flume::Receiver;
+use kanal::Receiver;
 use std::{
     collections::{HashMap, HashSet},
     num::Wrapping,
@@ -67,7 +67,7 @@ impl UdpRx {
                         Ok(UdpRxMessage::SetConfig(c)) => {
                             self.config = c;
                         },
-                        Err(flume::RecvError::Disconnected) => break,
+                        Err(kanal::ReceiveError::Closed) => break,
                     }
                 },
                 _ = tokio::time::sleep_until(playout_time) => {

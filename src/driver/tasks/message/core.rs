@@ -6,7 +6,7 @@ use crate::{
     tracks::{Track, TrackCommand, TrackHandle},
     ConnectionInfo,
 };
-use flume::{Receiver, Sender};
+use kanal::{Receiver, Sender};
 
 pub enum CoreMessage {
     ConnectWithResult(ConnectionInfo, Sender<Result<(), Error>>),
