@@ -236,10 +236,10 @@ impl Input {
     pub fn make_live(self, handle: &TokioHandle) -> Result<Self, AudioStreamError> {
         if let Self::Lazy(mut lazy) = self {
             let (created, lazy) = if lazy.should_create_async() {
-                let (tx, rx) = kanal::bounded(1);
+                let (tx, rx) = kanal::bounded_async(1);
                 handle.spawn(async move {
                     let out = lazy.create_async().await;
-                    drop(tx.send_async((out, lazy)));
+                    drop(tx.send((out, lazy)));
                 });
                 rx.recv().map_err(|_| {
                     let err_msg: Box<dyn Error + Send + Sync> =
