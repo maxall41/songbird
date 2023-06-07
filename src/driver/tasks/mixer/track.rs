@@ -301,7 +301,7 @@ impl<'a> InternalTrack {
                         }
                     }
                     Err(ReceiveError::Closed) => Err(InputReadyingError::Dropped),
-                    _ => {}
+                    Err(ReceiveError::SendClosed) => Err(InputReadyingError::Dropped),
                 };
 
                 let orig_out = orig_out.map(|a| (a, mix_state));
